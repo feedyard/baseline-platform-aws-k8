@@ -5,7 +5,7 @@ defaults: &defaults
   environment:
     BASH_ENV: local.env
   docker:
-    - image: quay.io/feedyard/circleci-platform-agent
+    - image: quay.io/feedyard/circleci-infra-agent
 
 jobs:
 
