@@ -1,5 +1,4 @@
 from invoke import task
-import pralinter
 
 @task
 def init(ctx):
