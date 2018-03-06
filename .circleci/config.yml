@@ -1,0 +1,76 @@
+version: 2
+
+defaults: &defaults
+  working_directory: ~/baseline-platform-aws-k8
+  environment:
+    BASH_ENV: local.env
+  docker:
+    - image: quay.io/feedyard/circleci-platform-agent
+
+jobs:
+
+  configure-sandbox-cluster:
+    <<: *defaults
+
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: confirm Docker
+          command: docker info
+      - run:
+          name: decrypt secrets
+          command: invoke dec
+      - run:
+          name: setup aws profile
+          command: bash setup_profile.sh $feedyard_svc_user_key $feedyard_svc_user_secret
+      - run:
+          name: assume kops role
+          command: source setup_assume_role.sh $sandbox_kops_role
+      - run:
+          name: setup terraform state file location
+          command: bash setup_backend.sh sandbox
+      - run:
+          name: initialize the terraform state backend
+          command: invoke init
+      - run:
+          name: output terraform state information
+          command: |
+            invoke output
+            cat public_subnet_objects.json
+            cat nat_subnet_objects.json
+            cat vpc.json
+            cat natgateway.json
+
+  validate-sandbox-cluster:
+      <<: *defaults
+
+      steps:
+        - checkout
+        - setup_remote_docker
+        - run:
+            name: confirm Docker
+            command: docker info
+        - run:
+            name: decrypt secrets
+            command: invoke dec
+        - run:
+            name: setup aws profile
+            command: bash setup_profile.sh $feedyard_svc_user_key $feedyard_svc_user_secret
+        - run:
+            name: assume nonprod role
+            command: source setup_assume_role.sh $sandbox_kops_role
+        - run:
+            name: setup terraform state file location
+            command: bash setup_backend.sh sandbox
+
+
+workflows:
+  version: 2
+  baseline-platform-aws-k8-pipeline:
+    jobs:
+      - configure-sandbox-cluster
+      - validate-sandbox-cluster:
+          type: approval
+          requires:
+            - configure-sandbox-cluster
