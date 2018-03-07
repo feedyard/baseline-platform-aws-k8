@@ -1,0 +1,234 @@
+apiVersion: kops/v1alpha2
+kind: Cluster
+metadata:
+  creationTimestamp: {{ timestamp }}
+  name: {{ cluster_name }}
+spec:
+  api:
+    loadBalancer:
+      type: Public
+  authorization:
+    alwaysAllow: {}
+  channel: stable
+  cloudProvider: aws
+  configBase: s3://{{ s3_bucket }}/{{ cluster_name }}
+  etcdClusters:
+  - etcdMembers:
+    - instanceGroup: {{ master_instance_0 }}
+      name: a-1
+      encryptedVolume: true
+    - instanceGroup: {{ master_instance_1 }}
+      name: a-2
+      encryptedVolume: true
+    - instanceGroup: {{ master_instance_2 }}
+      name: b-1
+      encryptedVolume: true
+    enableEtcdTLS: true
+    name: main
+    version: 3.3.1
+  - etcdMembers:
+    - instanceGroup: {{ master_instance_0 }}
+      name: a-1
+      encryptedVolume: true
+    - instanceGroup: {{ master_instance_1 }}
+      name: a-2
+      encryptedVolume: true
+    - instanceGroup: {{ master_instance_2 }}
+      name: b-1
+      encryptedVolume: true
+    enableEtcdTLS: true
+    name: events
+    version: 3.3.1
+  kubernetesApiAccess:
+    - 0.0.0.0/0
+  kubernetesVersion: {{ version }}
+  masterPublicName: api.{{ cluster_name }}
+  networkID: {{ vpc_id }}
+  networkCIDR: {{ vpc_cidr }}
+  networking:
+    calico:
+  nonMasqueradeCIDR: 100.64.0.0/10
+  sshAccess:
+  - 0.0.0.0/0
+  subnets:
+  # Utility subnets
+  - name: {{ utility_subnet_0_name }}
+    cidr: {{ utility_subnet_0_cidr }}
+    type: Utility
+    zone: {{ utility_subnet_0_az }}
+    #id: {{ utility_subnet_0_id }}
+  - name: {{ utility_subnet_1_name }}
+    cidr: {{ utility_subnet_1_cidr }}
+    type: Utility
+    zone: {{ utility_subnet_1_az }}
+    #id: {{ utility_subnet_1_id }}
+  - name: {{ utility_subnet_2_name }}
+    cidr: {{ utility_subnet_2_cidr }}
+    type: Utility
+    zone: {{ utility_subnet_2_az }}
+    #id: {{ utility_subnet_2_id }}
+
+  # Nodes subnets
+  - name: {{ nodes_subnet_0_name }}
+    cidr: {{ nodes_subnet_0_cidr }}
+    type: nodes
+    zone: {{ nodes_subnet_0_az }}
+    #id: {{ nodes_subnet_0_id }}
+  - name: {{ nodes_subnet_1_name }}
+    cidr: {{ nodes_subnet_1_cidr }}
+    type: nodes
+    zone: {{ nodes_subnet_1_az }}
+    #id: {{ nodes_subnet_1_id }}
+  - name: {{ nodes_subnet_2_name }}
+    cidr: {{ nodes_subnet_2_cidr }}
+    type: nodes
+    zone: {{ nodes_subnet_2_az }}
+    #id: {{ nodes_subnet_2_id }}
+
+  # Masters subnets
+  - name: {{ master_subnet_0_name }}
+    cidr: {{ master_subnet_0_cidr }}
+    type: master
+    zone: {{ master_subnet_0_az }}
+    #id: {{ master_subnet_0_id }}
+  - name: {{ master_subnet_1_name }}
+    cidr: {{ master_subnet_1_cidr }}
+    type: master
+    zone: {{ master_subnet_1_az }}
+    #id: {{ master_subnet_1_id }}
+  - name: {{ master_subnet_2_name }}
+    cidr: {{ master_subnet_2_cidr }}
+    type: master
+    zone: {{ master_subnet_2_az }}
+    #id: {{ master_subnet_2_id }}
+    
+  topology:
+    bastion:
+      bastionPublicName: bastion.{{ cluster_name }}
+    dns:
+      type: Public
+    masters: private
+    nodes: private
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: {{ timestamp }}
+  labels:
+    kops.k8s.io/cluster: {{ cluster_name }}
+  name: {{ master_instance_0 }}
+spec:
+  image: {{ image }}
+  machineType: m4.xlarge
+  rootVolumeSize: 40
+  rootVolumeType: gp2
+  maxSize: 1
+  minSize: 1
+  role: Master
+  subnets:
+  - {{ master_subnet_0_name }}
+  nodeLabels:
+    nodeType: master
+  cloudLabels:
+    cluster: {{ cluster_name }}
+    nodeType: master
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: {{ timestamp }}
+  labels:
+    kops.k8s.io/cluster: {{ cluster_name }}
+  name: {{ master_instance_1 }}
+spec:
+  image: {{ image }}
+  machineType: m4.xlarge
+  rootVolumeSize: 40
+  rootVolumeType: gp2
+  maxSize: 1
+  minSize: 1
+  role: Master
+  subnets:
+  - {{ master_subnet_1_name }}
+  nodeLabels:
+    nodeType: master
+  cloudLabels:
+    cluster: {{ cluster_name }}
+    nodeType: master
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: {{ timestamp }}
+  labels:
+    kops.k8s.io/cluster: {{ cluster_name }}
+  name: {{ master_instance_2 }}
+spec:
+  image: {{ image }}
+  machineType: m4.xlarge
+  rootVolumeSize: 40
+  rootVolumeType: gp2
+  maxSize: 1
+  minSize: 1
+  role: Master
+  subnets:
+  - {{ master_subnet_2_name }}
+  nodeLabels:
+    nodeType: master
+  cloudLabels:
+    cluster: {{ cluster_name }}
+    nodeType: master
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: {{ timestamp }}
+  labels:
+    kops.k8s.io/cluster: {{ cluster_name }}
+  name: nodes-instance
+spec:
+  image: {{ image }}
+  machineType: m4.xlarge
+  rootVolumeSize: 40
+  rootVolumeType: gp2
+  maxSize: 6
+  minSize: 3
+  role: Node
+  subnets:
+  - {{ nodes_subnet_0_name }}
+  - {{ nodes_subnet_1_name }}
+  - {{ nodes_subnet_2_name }}
+  nodeLabels:
+    nodeType: private
+  cloudLabels:
+    cluster: {{ cluster_name }}
+    nodeType: private
+
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: {{ timestamp }}
+  labels:
+    kops.k8s.io/cluster: {{ cluster_name }}
+  name: bastion
+spec:
+  image: {{ image }}
+  machineType: t2.micro
+  maxSize: 1
+  minSize: 1
+  role: Bastion
+  subnets:
+  - {{ utility_subnet_0_name }}
+  cloudLabels:
+    cluster: {{ cluster_name }}
+    nodeType: bastion

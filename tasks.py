@@ -6,6 +6,7 @@ def init(ctx):
 
 @task
 def output(ctx):
+    ctx.run("terraform output -json -module cluster_vpc k8_cluster_name > k8_cluster_name.json")
     ctx.run("terraform output -json -module cluster_vpc public_subnet_objects > public_subnet_objects.json")
     ctx.run("terraform output -json -module cluster_vpc nat_subnet_objects > nat_subnet_objects.json")
     ctx.run("terraform output -json -module cluster_vpc vpc > vpc.json")

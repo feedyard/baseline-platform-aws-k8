@@ -1,0 +1,26 @@
+{
+  "sensitive": false,
+  "type": "map",
+  "value": {
+    "az": [
+      "us-east-1b",
+      "us-east-1c",
+      "us-east-1d"
+    ],
+    "cidr": [
+      "10.10.16.0/23",
+      "10.10.18.0/23",
+      "10.10.20.0/23"
+    ],
+    "id": [
+      "subnet-2514350a",
+      "subnet-163dd55c",
+      "subnet-ec97b3b1"
+    ],
+    "name": [
+      "subnet-vpc-sandbox-public-us-east-1b",
+      "subnet-vpc-sandbox-public-us-east-1c",
+      "subnet-vpc-sandbox-public-us-east-1d"
+    ]
+  }
+}

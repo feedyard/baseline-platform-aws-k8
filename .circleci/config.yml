@@ -4,6 +4,7 @@ defaults: &defaults
   working_directory: ~/baseline-platform-aws-k8
   environment:
     BASH_ENV: local.env
+    K8_VERSION: 1.8.4
   docker:
     - image: quay.io/feedyard/circleci-infra-agent
 
