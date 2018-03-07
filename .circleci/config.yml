@@ -5,6 +5,7 @@ defaults: &defaults
   environment:
     BASH_ENV: local.env
     K8_VERSION: 1.8.4
+    AMI: "kope.io/k8s-1.7-debian-jessie-amd64-hvm-ebs-2017-07-28"
   docker:
     - image: quay.io/feedyard/circleci-infra-agent
 
@@ -36,12 +37,10 @@ jobs:
           command: invoke init
       - run:
           name: output terraform state information
-          command: |
-            invoke output
-            cat public_subnet_objects.json
-            cat nat_subnet_objects.json
-            cat vpc.json
-            cat natgateway.json
+          command: invoke output
+      - run:
+          name: render kops config temmplate
+          command: python render_kops_template.py feedyard sandbox $K8_VERSION $AMI
 
   validate-sandbox-cluster:
       <<: *defaults

@@ -55,8 +55,9 @@ def addVpcDefinitionsToDictionary(vpcDefinition):
     DICTIONARY["vpc_cidr"] = vpc['cidr']
 
 def addNatGatewayDefinitionsToDictionary(natGwDefinitions):
-    natgws = js.load(open(subnetDefinition))['value']
-    DICTIONARY['nat_gateway_subnets'] = natgws
+    natgws = js.load(open(natGwDefinitions))['value']
+    for i in range(len(natgws['id'])):
+        DICTIONARY['natgateway_{}'.format(i)] = subnets['id'][i]
 
 def isHA(subnetDefinition):
     subnets = js.load(open(subnetDefinition))['value']
@@ -74,7 +75,7 @@ def renderKopsSpec():
     addSubnetDefinitionsToDictionary('utility','public_subnet_objects.json')
     addInstanceGroupsToDictionary('master','nat_subnet_objects.json')
     addVpcDefinitionsToDictionary('vpc.json')
-    # addNatGatewayDefinitionsToDictionary('natgateway.json')
+    addNatGatewayDefinitionsToDictionary('natgateway.json')
 
     if isHA('nat_subnet_objects.json'):
         template = TEMPLATE_ENVIRONMENT.get_template("cluster_ha_template.yml")
