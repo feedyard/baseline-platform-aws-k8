@@ -40,7 +40,7 @@ jobs:
           command: invoke output
       - run:
           name: render kops config temmplate
-          command: python render_kops_template.py feedyard sandbox $K8_VERSION $AMI
+          command: python3 render_kops_template.py feedyard sandbox $K8_VERSION $AMI
 
   validate-sandbox-cluster:
       <<: *defaults
