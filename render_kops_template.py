@@ -57,7 +57,7 @@ def addVpcDefinitionsToDictionary(vpcDefinition):
 def addNatGatewayDefinitionsToDictionary(natGwDefinitions):
     natgws = js.load(open(natGwDefinitions))['value']
     for i in range(len(natgws['id'])):
-        DICTIONARY['natgateway_{}'.format(i)] = subnets['id'][i]
+        DICTIONARY['natgateway_{}'.format(i)] = natgws['id'][i]
 
 def isHA(subnetDefinition):
     subnets = js.load(open(subnetDefinition))['value']
