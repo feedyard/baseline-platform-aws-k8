@@ -12,7 +12,6 @@ def output(ctx):
     ctx.run("terraform output -json -module cluster_vpc vpc > vpc.json")
     ctx.run("terraform output -json -module cluster_vpc natgw_objects  > natgateway.json")
 
-
 @task
 def enc(ctx, file='local.env', encoded_file='env.ci'):
     ctx.run("openssl aes-256-cbc -e -in {} -out {} -k $FEEDYARD_PIPELINE_KEY".format(file, encoded_file))

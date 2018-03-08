@@ -82,11 +82,10 @@ def renderKopsSpec():
     else:
         template = TEMPLATE_ENVIRONMENT.get_template("cluster_template.yml")
     renderedtemplate = template.render(**DICTIONARY)
-    print (renderedtemplate)
-    #
-    # f = open("{}/{}-cluster.yaml".format(vpc_env, vpc_env), 'w')
-    # f.write(renderedtemplate)  # python will convert \n to os.linesep
-    # f.close()
+
+    f = open("{}_cluster.yaml".format(vpc_env), 'w')
+    f.write(renderedtemplate)  # python will convert \n to os.linesep
+    f.close()
 
 if __name__ == '__main__':
     renderKopsSpec()

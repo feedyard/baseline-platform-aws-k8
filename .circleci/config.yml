@@ -5,7 +5,7 @@ defaults: &defaults
   environment:
     BASH_ENV: local.env
     K8_VERSION: 1.8.4
-    AMI: "kope.io/k8s-1.7-debian-jessie-amd64-hvm-ebs-2017-07-28"
+    AMI: "kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2018-01-14"
   docker:
     - image: quay.io/feedyard/circleci-infra-agent
 
@@ -41,6 +41,9 @@ jobs:
       - run:
           name: render kops config temmplate
           command: python3 render_kops_template.py feedyard sandbox $K8_VERSION $AMI
+      - run:
+          name: create/update kubernetes cluser
+          command: bash setup_kubernetes.sh feedyard sandbox feedyard.io
 
   validate-sandbox-cluster:
       <<: *defaults
