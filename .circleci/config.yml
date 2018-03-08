@@ -37,7 +37,9 @@ jobs:
           command: invoke init
       - run:
           name: output terraform state information
-          command: invoke output
+          command: |
+            invoke output
+            cat public_subnet_objects.json
       - run:
           name: render kops config temmplate
           command: |
