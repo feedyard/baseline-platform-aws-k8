@@ -101,7 +101,6 @@ spec:
 apiVersion: kops/v1alpha2
 kind: InstanceGroup
 metadata:
-  creationTimestamp: {{ timestamp }}
   labels:
     kops.k8s.io/cluster: {{ cluster_name }}
   name: {{ master_instance_0 }}
@@ -126,7 +125,6 @@ spec:
 apiVersion: kops/v1alpha2
 kind: InstanceGroup
 metadata:
-  creationTimestamp: {{ timestamp }}
   labels:
     kops.k8s.io/cluster: {{ cluster_name }}
   name: {{ master_instance_1 }}
@@ -151,7 +149,6 @@ spec:
 apiVersion: kops/v1alpha2
 kind: InstanceGroup
 metadata:
-  creationTimestamp: {{ timestamp }}
   labels:
     kops.k8s.io/cluster: {{ cluster_name }}
   name: {{ master_instance_2 }}
@@ -176,7 +173,6 @@ spec:
 apiVersion: kops/v1alpha2
 kind: InstanceGroup
 metadata:
-  creationTimestamp: {{ timestamp }}
   labels:
     kops.k8s.io/cluster: {{ cluster_name }}
   name: nodes-instance
@@ -203,7 +199,6 @@ spec:
 apiVersion: kops/v1alpha2
 kind: InstanceGroup
 metadata:
-  creationTimestamp: {{ timestamp }}
   labels:
     kops.k8s.io/cluster: {{ cluster_name }}
   name: bastion

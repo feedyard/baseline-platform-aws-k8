@@ -40,10 +40,12 @@ jobs:
           command: invoke output
       - run:
           name: render kops config temmplate
-          command: python3 render_kops_template.py feedyard sandbox $K8_VERSION $AMI
-      - run:
-          name: create/update kubernetes cluser
-          command: bash setup_kubernetes.sh feedyard sandbox feedyard.io
+          command: |
+            python3 render_kops_template.py feedyard sandbox $K8_VERSION $AMI
+            cat sandbox_cluster.yml
+#      - run:
+#          name: create/update kubernetes cluser
+#          command: bash setup_kubernetes.sh feedyard sandbox feedyard.io
 
   validate-sandbox-cluster:
       <<: *defaults
