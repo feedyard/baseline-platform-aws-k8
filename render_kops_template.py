@@ -70,7 +70,6 @@ def renderKopsSpec():
     DICTIONARY['version'] = k8_version
     DICTIONARY['image'] = ami
     addClusterNameToDictionary('k8_cluster_name.json')
-    addSubnetDefinitionsToDictionary('private','private_subnet_objects.json')
     addSubnetDefinitionsToDictionary('nat','nat_subnet_objects.json')
     addSubnetDefinitionsToDictionary('public','public_subnet_objects.json')
     addInstanceGroupsToDictionary('master','nat_subnet_objects.json')
