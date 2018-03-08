@@ -64,8 +64,8 @@ jobs:
             name: assume nonprod role
             command: source setup_assume_role.sh $sandbox_kops_role
         - run:
-            name: setup terraform state file location
-            command: bash setup_backend.sh sandbox
+            name: validate cluster
+            command: validate_cluster.sh feedyard sandbox feedyard.io
 
 
 workflows:

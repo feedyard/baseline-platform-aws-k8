@@ -7,3 +7,4 @@
 
 *.env
 Gemfile.lock
+*.id_rsa
