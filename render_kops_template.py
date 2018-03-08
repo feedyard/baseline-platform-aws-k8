@@ -42,6 +42,7 @@ def addSubnetDefinitionsToDictionary(subnet_group, subnetDefinition):
         DICTIONARY['{}_subnet_{}_name'.format(subnet_group,i)] = subnets['name'][i]
         DICTIONARY['{}_subnet_{}_cidr'.format(subnet_group,i)] = subnets['cidr'][i]
         DICTIONARY['{}_subnet_{}_az'.format(subnet_group,i)] = subnets['az'][i]
+        DICTIONARY['{}_subnet_{}_id'.format(subnet_group,i)] = subnets['id'][i]
 
 def addInstanceGroupsToDictionary(subnet_group, subnetDefinition):
     subnets = js.load(open(subnetDefinition))['value']
