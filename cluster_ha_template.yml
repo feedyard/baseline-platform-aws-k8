@@ -71,19 +71,19 @@ spec:
   # Nat subnets
   - name: {{ nat_subnet_0_name }}
     cidr: {{ nat_subnet_0_cidr }}
-    type: nodes
+    type: Private
     zone: {{ nat_subnet_0_az }}
     egress: {{ natgateway_0 }}
     #id: {{ nat_subnet_0_id }}
   - name: {{ nat_subnet_1_name }}
     cidr: {{ nat_subnet_1_cidr }}
-    type: nodes
+    type: Private
     zone: {{ nat_subnet_1_az }}
     egress: {{ natgateway_1 }}
     #id: {{ nat_subnet_1_id }}
   - name: {{ nat_subnet_2_name }}
     cidr: {{ nat_subnet_2_cidr }}
-    type: nodes
+    type: Private
     zone: {{ nat_subnet_2_az }}
     egress: {{ natgateway_2 }}
     #id: {{ nat_subnet_2_id }}
