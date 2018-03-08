@@ -51,56 +51,42 @@ spec:
   sshAccess:
   - 0.0.0.0/0
   subnets:
-  # Utility subnets
-  - name: {{ utility_subnet_0_name }}
-    cidr: {{ utility_subnet_0_cidr }}
+  # Public subnets
+  - name: {{ public_subnet_0_name }}
+    cidr: {{ public_subnet_0_cidr }}
     type: Utility
-    zone: {{ utility_subnet_0_az }}
-    #id: {{ utility_subnet_0_id }}
-  - name: {{ utility_subnet_1_name }}
-    cidr: {{ utility_subnet_1_cidr }}
+    zone: {{ public_subnet_0_az }}
+    #id: {{ public_subnet_0_id }}
+  - name: {{ public_subnet_1_name }}
+    cidr: {{ public_subnet_1_cidr }}
     type: Utility
-    zone: {{ utility_subnet_1_az }}
-    #id: {{ utility_subnet_1_id }}
-  - name: {{ utility_subnet_2_name }}
-    cidr: {{ utility_subnet_2_cidr }}
+    zone: {{ public_subnet_1_az }}
+    #id: {{ public_subnet_1_id }}
+  - name: {{ public_subnet_2_name }}
+    cidr: {{ public_subnet_2_cidr }}
     type: Utility
-    zone: {{ utility_subnet_2_az }}
-    #id: {{ utility_subnet_2_id }}
+    zone: {{ public_subnet_2_az }}
+    #id: {{ public_subnet_2_id }}
 
-  # Nodes subnets
-  - name: {{ nodes_subnet_0_name }}
-    cidr: {{ nodes_subnet_0_cidr }}
+  # Nat subnets
+  - name: {{ nat_subnet_0_name }}
+    cidr: {{ nat_subnet_0_cidr }}
     type: nodes
-    zone: {{ nodes_subnet_0_az }}
-    #id: {{ nodes_subnet_0_id }}
-  - name: {{ nodes_subnet_1_name }}
-    cidr: {{ nodes_subnet_1_cidr }}
+    zone: {{ nat_subnet_0_az }}
+    egress: {{ natgateway_0 }}
+    #id: {{ nat_subnet_0_id }}
+  - name: {{ nat_subnet_1_name }}
+    cidr: {{ nat_subnet_1_cidr }}
     type: nodes
-    zone: {{ nodes_subnet_1_az }}
-    #id: {{ nodes_subnet_1_id }}
-  - name: {{ nodes_subnet_2_name }}
-    cidr: {{ nodes_subnet_2_cidr }}
+    zone: {{ nat_subnet_1_az }}
+    egress: {{ natgateway_1 }}
+    #id: {{ nat_subnet_1_id }}
+  - name: {{ nat_subnet_2_name }}
+    cidr: {{ nat_subnet_2_cidr }}
     type: nodes
-    zone: {{ nodes_subnet_2_az }}
-    #id: {{ nodes_subnet_2_id }}
-
-  # Masters subnets
-  - name: {{ master_subnet_0_name }}
-    cidr: {{ master_subnet_0_cidr }}
-    type: master
-    zone: {{ master_subnet_0_az }}
-    #id: {{ master_subnet_0_id }}
-  - name: {{ master_subnet_1_name }}
-    cidr: {{ master_subnet_1_cidr }}
-    type: master
-    zone: {{ master_subnet_1_az }}
-    #id: {{ master_subnet_1_id }}
-  - name: {{ master_subnet_2_name }}
-    cidr: {{ master_subnet_2_cidr }}
-    type: master
-    zone: {{ master_subnet_2_az }}
-    #id: {{ master_subnet_2_id }}
+    zone: {{ nat_subnet_2_az }}
+    egress: {{ natgateway_2 }}
+    #id: {{ nat_subnet_2_id }}
     
   topology:
     bastion:
@@ -128,7 +114,7 @@ spec:
   minSize: 1
   role: Master
   subnets:
-  - {{ master_subnet_0_name }}
+  - {{ nat_subnet_0_name }}
   nodeLabels:
     nodeType: master
   cloudLabels:
@@ -153,7 +139,7 @@ spec:
   minSize: 1
   role: Master
   subnets:
-  - {{ master_subnet_1_name }}
+  - {{ nat_subnet_1_name }}
   nodeLabels:
     nodeType: master
   cloudLabels:
@@ -178,7 +164,7 @@ spec:
   minSize: 1
   role: Master
   subnets:
-  - {{ master_subnet_2_name }}
+  - {{ nat_subnet_2_name }}
   nodeLabels:
     nodeType: master
   cloudLabels:
@@ -203,9 +189,9 @@ spec:
   minSize: 3
   role: Node
   subnets:
-  - {{ nodes_subnet_0_name }}
-  - {{ nodes_subnet_1_name }}
-  - {{ nodes_subnet_2_name }}
+  - {{ nat_subnet_0_name }}
+  - {{ nat_subnet_1_name }}
+  - {{ nat_subnet_2_name }}
   nodeLabels:
     nodeType: private
   cloudLabels:
@@ -228,7 +214,7 @@ spec:
   minSize: 1
   role: Bastion
   subnets:
-  - {{ utility_subnet_0_name }}
+  - {{ public_subnet_0_name }}
   cloudLabels:
     cluster: {{ cluster_name }}
     nodeType: bastion
