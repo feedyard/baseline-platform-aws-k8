@@ -56,17 +56,17 @@ spec:
     cidr: {{ public_subnet_0_cidr }}
     type: Utility
     zone: {{ public_subnet_0_az }}
-    #id: {{ public_subnet_0_id }}
+    id: {{ public_subnet_0_id }}
   - name: {{ public_subnet_1_name }}
     cidr: {{ public_subnet_1_cidr }}
     type: Utility
     zone: {{ public_subnet_1_az }}
-    #id: {{ public_subnet_1_id }}
+    id: {{ public_subnet_1_id }}
   - name: {{ public_subnet_2_name }}
     cidr: {{ public_subnet_2_cidr }}
     type: Utility
     zone: {{ public_subnet_2_az }}
-    #id: {{ public_subnet_2_id }}
+    id: {{ public_subnet_2_id }}
 
   # Nat subnets
   - name: {{ nat_subnet_0_name }}
@@ -74,19 +74,19 @@ spec:
     type: Private
     zone: {{ nat_subnet_0_az }}
     egress: {{ natgateway_0 }}
-    #id: {{ nat_subnet_0_id }}
+    id: {{ nat_subnet_0_id }}
   - name: {{ nat_subnet_1_name }}
     cidr: {{ nat_subnet_1_cidr }}
     type: Private
     zone: {{ nat_subnet_1_az }}
     egress: {{ natgateway_1 }}
-    #id: {{ nat_subnet_1_id }}
+    id: {{ nat_subnet_1_id }}
   - name: {{ nat_subnet_2_name }}
     cidr: {{ nat_subnet_2_cidr }}
     type: Private
     zone: {{ nat_subnet_2_az }}
     egress: {{ natgateway_2 }}
-    #id: {{ nat_subnet_2_id }}
+    id: {{ nat_subnet_2_id }}
     
   topology:
     bastion:
