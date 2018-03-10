@@ -69,7 +69,7 @@ jobs:
             command: source setup_assume_role.sh $sandbox_kops_role
         - run:
             name: validate cluster
-            command: validate_cluster.sh feedyard sandbox feedyard.io
+            command: bash validate_cluster.sh feedyard sandbox feedyard.io
 
 
 workflows:
