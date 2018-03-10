@@ -6,6 +6,8 @@ defaults: &defaults
     BASH_ENV: local.env
     K8_VERSION: 1.8.4
     AMI: "kope.io/k8s-1.8-debian-jessie-amd64-hvm-ebs-2018-01-14"
+    MASTERS: "t2.large"
+    NODES: "t2.medium"
   docker:
     - image: quay.io/feedyard/circleci-infra-agent
 
@@ -37,13 +39,11 @@ jobs:
           command: invoke init
       - run:
           name: output terraform state information
-          command: |
-            invoke output
-            cat public_subnet_objects.json
+          command: invoke output
       - run:
           name: render kops config temmplate
           command: |
-            python3 render_kops_template.py feedyard sandbox $K8_VERSION $AMI
+            python3 render_kops_template.py feedyard sandbox $K8_VERSION $AMI $MASTERS $NODES
             cat sandbox_cluster.yml
 #      - run:
 #          name: create/update kubernetes cluser

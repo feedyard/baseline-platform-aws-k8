@@ -16,12 +16,16 @@ parser.add_argument('org', type=str, nargs='?', help='org name used for s3 bucke
 parser.add_argument('vpc_env', type=str, nargs='?', help='the cluster env to deploy')
 parser.add_argument('k8_version', type=str, nargs='?', help='version of kubernetes to deploy')
 parser.add_argument('ami', type=str, nargs='?', help='ami to use')
+parser.add_argument('masters', type=str, nargs='?', help='instance type for masters')
+parser.add_argument('nodes', type=str, nargs='?', help='instance type for nodes')
 
 args = parser.parse_args()
 org = args.org
 vpc_env = args.vpc_env
 k8_version = args.k8_version
 ami = args.ami
+masters = args.masters
+nodes = args.nodes
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_ENVIRONMENT = Environment(
@@ -70,6 +74,8 @@ def renderKopsSpec():
     DICTIONARY['s3_bucket'] = '{}-{}-state'.format(org, vpc_env)
     DICTIONARY['version'] = k8_version
     DICTIONARY['image'] = ami
+    DICTIONARY['masters'] = masters
+    DICTIONARY['nodes'] = nodes
     addClusterNameToDictionary('k8_cluster_name.json')
     addSubnetDefinitionsToDictionary('nat','nat_subnet_objects.json')
     addSubnetDefinitionsToDictionary('public','public_subnet_objects.json')

@@ -1,7 +1,7 @@
+---
 apiVersion: kops/v1alpha2
 kind: Cluster
 metadata:
-  creationTimestamp: {{ timestamp }}
   name: {{ cluster_name }}
 spec:
   api:
@@ -15,60 +15,59 @@ spec:
   etcdClusters:
   - etcdMembers:
     - instanceGroup: {{ master_instance_0 }}
-      name: a-1
+      name: m1
       encryptedVolume: true
     - instanceGroup: {{ master_instance_1 }}
-      name: a-2
+      name: m2
       encryptedVolume: true
     - instanceGroup: {{ master_instance_2 }}
-      name: b-1
+      name: m3
       encryptedVolume: true
-    enableEtcdTLS: true
     name: main
-    version: 3.3.1
   - etcdMembers:
     - instanceGroup: {{ master_instance_0 }}
-      name: a-1
+      name: m1
       encryptedVolume: true
     - instanceGroup: {{ master_instance_1 }}
-      name: a-2
+      name: m2
       encryptedVolume: true
     - instanceGroup: {{ master_instance_2 }}
-      name: b-1
+      name: m3
       encryptedVolume: true
-    enableEtcdTLS: true
     name: events
-    version: 3.3.1
+  iam:
+    allowContainerRegistry: true
+    legacy: false
   kubernetesApiAccess:
     - 0.0.0.0/0
-  kubernetesVersion: {{ version }}
+  kubernetesVersion: 1.8.4
   masterPublicName: api.{{ cluster_name }}
-  networkID: {{ vpc_id }}
+  networkID: {{ vpc_id}}
   networkCIDR: {{ vpc_cidr }}
   networking:
-    calico:
+    calico: {}
   nonMasqueradeCIDR: 100.64.0.0/10
   sshAccess:
-  - 0.0.0.0/0
+    - 0.0.0.0/0
   subnets:
-  # Public subnets
-  - name: {{ public_subnet_0_name }}
-    cidr: {{ public_subnet_0_cidr }}
+    ### Subnets for LB/Bastion (Utility)
+  - name: {{ nat_subnet_0_name }}
+    cidr: {{ nat_subnet_0_cidr }}
     type: Utility
-    zone: {{ public_subnet_0_az }}
-    id: {{ public_subnet_0_id }}
-  - name: {{ public_subnet_1_name }}
-    cidr: {{ public_subnet_1_cidr }}
+    zone: {{ nat_subnet_0_az }}
+    id: {{ nat_subnet_0_id }}
+  - name: {{ nat_subnet_1_name }}
+    cidr: {{ nat_subnet_1_cidr }}
     type: Utility
-    zone: {{ public_subnet_1_az }}
-    id: {{ public_subnet_1_id }}
-  - name: {{ public_subnet_2_name }}
-    cidr: {{ public_subnet_2_cidr }}
+    zone: {{ nat_subnet_1_az }}
+    id: {{ nat_subnet_1_id }}
+  - name: {{ nat_subnet_2_name }}
+    cidr: {{ nat_subnet_2_cidr }}
     type: Utility
-    zone: {{ public_subnet_2_az }}
-    id: {{ public_subnet_2_id }}
+    zone: {{ nat_subnet_2_az }}
+    id: {{ nat_subnet_2_id }}
 
-  # Nat subnets
+    ### Subnets for Private nodes & masters
   - name: {{ nat_subnet_0_name }}
     cidr: {{ nat_subnet_0_cidr }}
     type: Private
@@ -87,7 +86,6 @@ spec:
     zone: {{ nat_subnet_2_az }}
     egress: {{ natgateway_2 }}
     id: {{ nat_subnet_2_id }}
-    
   topology:
     bastion:
       bastionPublicName: bastion.{{ cluster_name }}
@@ -106,19 +104,18 @@ metadata:
   name: {{ master_instance_0 }}
 spec:
   image: {{ image }}
-  machineType: m4.xlarge
+  machineType: {{ masters }}
   rootVolumeSize: 40
   rootVolumeType: gp2
   maxSize: 1
   minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: {{ master_instance_0 }}
+  cloudLabels:
+    feedyard: "True"
   role: Master
   subnets:
-  - {{ nat_subnet_0_name }}
-  nodeLabels:
-    nodeType: master
-  cloudLabels:
-    cluster: {{ cluster_name }}
-    nodeType: master
+    - {{ nat_subnet_0_name }}
 
 ---
 
@@ -130,19 +127,18 @@ metadata:
   name: {{ master_instance_1 }}
 spec:
   image: {{ image }}
-  machineType: m4.xlarge
+  machineType: {{ masters }}
   rootVolumeSize: 40
   rootVolumeType: gp2
   maxSize: 1
   minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: {{ master_instance_1 }}
+  cloudLabels:
+    feedyard: "True"
   role: Master
   subnets:
-  - {{ nat_subnet_1_name }}
-  nodeLabels:
-    nodeType: master
-  cloudLabels:
-    cluster: {{ cluster_name }}
-    nodeType: master
+    - {{ nat_subnet_1_name }}
 
 ---
 
@@ -154,19 +150,18 @@ metadata:
   name: {{ master_instance_2 }}
 spec:
   image: {{ image }}
-  machineType: m4.xlarge
+  machineType: {{ masters }}
   rootVolumeSize: 40
   rootVolumeType: gp2
   maxSize: 1
   minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: {{ master_instance_2 }}
+  cloudLabels:
+    feedyard: "True"
   role: Master
   subnets:
-  - {{ nat_subnet_2_name }}
-  nodeLabels:
-    nodeType: master
-  cloudLabels:
-    cluster: {{ cluster_name }}
-    nodeType: master
+    - {{ nat_subnet_2_name }}
 
 ---
 
@@ -175,24 +170,23 @@ kind: InstanceGroup
 metadata:
   labels:
     kops.k8s.io/cluster: {{ cluster_name }}
-  name: nodes-instance
+  name: nodes
 spec:
   image: {{ image }}
-  machineType: m4.xlarge
+  machineType: {{ nodes }}
   rootVolumeSize: 40
   rootVolumeType: gp2
-  maxSize: 6
+  maxSize: 3
   minSize: 3
+  nodeLabels:
+    kops.k8s.io/instancegroup: nodes
+  cloudLabels:
+    feedyard: "True"
   role: Node
   subnets:
-  - {{ nat_subnet_0_name }}
-  - {{ nat_subnet_1_name }}
-  - {{ nat_subnet_2_name }}
-  nodeLabels:
-    nodeType: private
-  cloudLabels:
-    cluster: {{ cluster_name }}
-    nodeType: private
+    - {{ nat_subnet_0_name }}
+    - {{ nat_subnet_1_name }}
+    - {{ nat_subnet_2_name }}
 
 ---
 
@@ -209,7 +203,7 @@ spec:
   minSize: 1
   role: Bastion
   subnets:
-  - {{ public_subnet_0_name }}
+    - {{ nat_subnet_0_name }}
   cloudLabels:
-    cluster: {{ cluster_name }}
+    feedyard: "True"
     nodeType: bastion
