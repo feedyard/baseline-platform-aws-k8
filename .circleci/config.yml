@@ -77,7 +77,10 @@ workflows:
   baseline-platform-aws-k8-pipeline:
     jobs:
       - configure-sandbox-cluster
-      - validate-sandbox-cluster:
+      - approve-sandbox-cluster:
           type: approval
           requires:
             - configure-sandbox-cluster
+      - validate-sandbox-cluster:
+          requires:
+            - approve-sandbox-cluster
