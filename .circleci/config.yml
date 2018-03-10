@@ -45,9 +45,9 @@ jobs:
           command: |
             python3 render_kops_template.py feedyard sandbox $K8_VERSION $AMI $MASTERS $NODES
             cat sandbox_cluster.yml
-#      - run:
-#          name: create/update kubernetes cluser
-#          command: bash setup_kubernetes.sh feedyard sandbox feedyard.io
+      - run:
+          name: create/update kubernetes cluster
+          command: bash setup_kubernetes.sh feedyard sandbox feedyard.io
 
   validate-sandbox-cluster:
       <<: *defaults
