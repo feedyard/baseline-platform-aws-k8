@@ -52,7 +52,7 @@ def addInstanceGroupsToDictionary(subnet_group, subnetDefinition):
     subnets = js.load(open(subnetDefinition))['value']
 
     for i in range(len(subnets['az'])):
-        DICTIONARY['{}_instance_{}'.format(subnet_group,i)] = subnets['az'][i]
+        DICTIONARY['{}_instance_{}'.format(subnet_group,i)] = 'master-' + subnets['az'][i]
 
 def addVpcDefinitionsToDictionary(vpcDefinition):
     vpc = js.load(open(vpcDefinition))['value']
