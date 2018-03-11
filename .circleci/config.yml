@@ -42,12 +42,16 @@ jobs:
           command: invoke output
       - run:
           name: render kops config temmplate
-          command: |
-            python3 render_kops_template.py feedyard sandbox $K8_VERSION $AMI $MASTERS $NODES
-            cat sandbox_cluster.yml
+          command: python3 render_kops_template.py feedyard sandbox $K8_VERSION $AMI $MASTERS $NODES
       - run:
           name: create/update kubernetes cluster
           command: bash setup_kubernetes.sh feedyard sandbox feedyard.io
+      - run:
+          name: validate cluster
+          command: bash validate_cluster.sh feedyard sandbox feedyard.io
+#      - run:
+#          name: deploy metrics-server
+#          comand: kubectl create -f metrics-server/1.8+/
 
   validate-sandbox-cluster:
       <<: *defaults
@@ -67,9 +71,7 @@ jobs:
         - run:
             name: assume nonprod role
             command: source setup_assume_role.sh $sandbox_kops_role
-        - run:
-            name: validate cluster
-            command: bash validate_cluster.sh feedyard sandbox feedyard.io
+
 
 
 workflows:
